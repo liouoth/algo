@@ -3,23 +3,23 @@ package 链表.common;
 /**
  * 单链表
  */
-public class ListNode {
-    public Object data;
+public class ListNode <T> {
+    public T data;
     public ListNode next;
 
     public ListNode() {
     }
 
-    public ListNode(Object data, ListNode next) {
+    public ListNode(T data, ListNode next) {
         this.data = data;
         this.next = next;
     }
 
-    public Object getData() {
+    public T getData() {
         return data;
     }
 
-    public void setData(Object data) {
+    public void setData(T data) {
         this.data = data;
     }
 

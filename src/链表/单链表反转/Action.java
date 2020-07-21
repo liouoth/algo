@@ -2,12 +2,30 @@ package 链表.单链表反转;
 
 import 链表.common.ListNode;
 
+/**
+ *  @name Action
+ *  @Description 单链表反转
+ *  @author will7 Mao
+ *  @Date  2020/7/21
+ */
 public class Action {
     public static ListNode reserve(ListNode head){
-        if (head==null){
-            return null;
+        //需要对head做判空操作，因为需要判断head.next
+        //如果head.next为空则返回head,只有一个节点返回本身不需要反转
+        if (head==null||head.next==null){
+            return head;
         }
+
         ListNode tail = head;
+        /**
+         * 想法一个节点不能指向多个，但是可以多个节点都指向一个
+         * 首先1-》2-》3 ,变成 1<-2-<3
+         * head是头节点，tail是逆置后的头节点
+         * 因为改变 2 的 后继节点会让 3丢失，所以先保存3的引用为temp
+         * 先让head的后继节点，指向逆置后的头节点 tail，初始tail指向head，接着是tail是2，3，最后是4
+         * 然后将tail指向head之后的元素
+         * 最后将head指向temp引用
+         */
         while (head.next!=null){
             ListNode temp = head.next.next;
             head.next.next = tail;
@@ -35,4 +53,5 @@ public class Action {
         System.out.println("逆置后:");
         ListNode.stdOut(list);
     }
+
 }
