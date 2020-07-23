@@ -5,7 +5,7 @@ package 链表.common;
  */
 public class ListNode <T> {
     public T data;
-    public ListNode next;
+    public ListNode<T> next;
 
     public ListNode() {
     }
@@ -23,11 +23,11 @@ public class ListNode <T> {
         this.data = data;
     }
 
-    public ListNode getNext() {
+    public ListNode<T> getNext() {
         return next;
     }
 
-    public void setNext(ListNode next) {
+    public void setNext(ListNode<T> next) {
         this.next = next;
     }
 
