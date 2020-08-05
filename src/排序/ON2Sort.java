@@ -5,7 +5,7 @@ import java.util.Arrays;
 /**
  * 时间复杂度为O(n^2)的排序算法
  */
-public class n2Sort {
+public class ON2Sort {
     private static void bubbleSort(int[] a) {
         int length = a.length;
         /**
@@ -26,27 +26,67 @@ public class n2Sort {
         }
     }
 
-    //插入排序，丑陋版本，使用了额外的存储空间
-    private static int[] insertionSortUgly(int[] a) {
+    private static void bubbleSortPromote(int[] a) {
         int length = a.length;
-        int size = 0;
-        int[] b = new int[length];
-        for (int i = 0; i < length; i++) {
-            int index = 0;
-            for (int j = 0; j<size; j++, index++) {
-                if (a[i] < b[j]) {
-                    index = j;
+        /**
+         * 优化循环一次没有数据交换那么表示逆序度为0，数据已经排列好了
+         */
+        for (int i = 0; i < length - 1; i++) {
+            boolean flag = true;
+            for (int j = 0; j < length - 1 - i; j++) {
+                if (a[j] > a[j + 1]) {
+                    int temp = a[j];
+                    a[j] = a[j + 1];
+                    a[j + 1] = temp;
+                    flag = false;
+                }
+            }
+            if (flag)break;
+        }
+    }
+
+    /**
+     * 插入排序.将数组分为左右两边，左边为已排序，右边为未排序
+     * 这样的优点是：只移动已排序段的元素
+     */
+    private static void insertionSortUgly(int[] a) {
+        if (a==null||a.length<=1)return;
+        for(int i = 1;i<a.length;i++){
+            int move = i;
+            int temp = a[i];
+            for (int j=0;j<i;j++){
+                if (a[j]>temp){
+                    move = j;
                     break;
                 }
             }
-            for (int c = length - 1; c > index; c--) {
-                b[c] = b[c - 1];
+            for (int c = i;c>move;c--){
+                a[c] = a[c-1];
             }
-            b[index] = a[i];
-            size++;
+            a[move] = temp;
         }
-        return b;
     }
+
+    /**
+     * 优化上述排序，从右侧开始比较，比较后，如果小于就直接移动，这样就能够省掉一层循环
+     */
+    private static void insertionSort(int[] a) {
+        if (a==null||a.length<=1)return;
+        for(int i = 1;i<a.length;i++){
+            int value = a[i];
+            //int index = i; 将j提出
+            int j = i-1;
+            for (;j>=0;j--){
+                if (a[j]>value){
+                    a[j+1]=a[j];
+                }else {
+                    break;
+                }
+            }
+            a[j+1] = value;
+        }
+    }
+
 
     private static int[] selectionSort(int[] a) {
         int length = a.length;
@@ -74,7 +114,8 @@ public class n2Sort {
 //        System.out.println("冒泡排序后："+Arrays.toString(a));
 //        SelectionSort(a);
 //        System.out.println("选择排序后："+Arrays.toString(a));
-        System.out.println("选择排序后：" + Arrays.toString(insertionSortUgly(a)));
+        insertionSort(a);
+        System.out.println("选择排序后：" + Arrays.toString(a));
     }
 
 }
