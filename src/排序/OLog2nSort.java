@@ -7,109 +7,83 @@ public class OLog2nSort {
     /**
      * 归并排序
      */
-    private static void mergeSort(int[] a) {
-        int[] merge = new int[a.length];
-        mergeSort(a, 0, a.length - 1, merge);
-    }
-
-    private static void mergeSort(int[] a, int start, int end, int[] merge) {
-        if (a == null || start >= end) {
+    private static void mergeSort(int l,int h,int [] a,int [] b){
+        if (a!=null&&l>=h){
             return;
         }
-        int middle = (start + end) / 2;
-        mergeSort(a, start, middle, merge);
-        mergeSort(a, middle + 1, end, merge);
-        merge(a, start, middle, end, merge);
+        //卧槽没想到 我的错点 竟然是这里,a 与 b的中位可以表达成，(a+b)/2
+        //如果a与b是非常大的数，那么为了防止溢出，可以表达成 a+(b-a)/2 同样是a/2+b/2
+        int m = l+((h-l)>>1);
+        mergeSort(l,m,a,b);
+        mergeSort(m+1,h,a,b);
+        merge(l,m,h,a,b);
     }
 
-    private static void merge(int[] a, int start, int middle, int end, int[] merge) {
-        int i = 0;
-        int low = start, m = middle + 1;
-        while (low <= middle && m <= end) {
-            if (a[low] < a[m]) {
-                merge[i++] = a[low++];
-            } else {
-                merge[i++] = a[m++];
-            }
+    private static void merge(int l,int m, int h, int[] a,int [] b) {
+        int start = l;
+        int i=l,j=m+1;
+        while (i<=m&&j<=h){
+            b[l++] = a[j]<a[i]?a[j++]:a[i++];
+        }
+        while (i<=m){
+            b[l++] = a[i++];
+        }
+        while (j<=h){
+            b[l++] = a[j++];
         }
 
-        while (low <= middle) {
-            merge[i++] = a[low++];
-        }
-
-        while (m <= end) {
-            merge[i++] = a[m++];
-        }
-
-        for (int l = 0; l < i; l++) {
-            a[start + l] = merge[l];
+        while(start<l){
+            a[start] = b[start++];
         }
     }
 
+    private static void mergeSortTest(){
+        int [] a = {3,2,4,2,1};
+        int [] b = new int [5];
+        System.out.println("排序前："+Arrays.toString(a));
+        mergeSort(0,4,a,b);
+        System.out.println("排序后："+Arrays.toString(a));
+    }
 
     /**
      * 快速排序
      */
-    private static void quickSort(int[] a) {
-        partitionSort(a, 0, a.length - 1);
+    private static void quickSortTest(){
+        int [] a = {3,2,4,2,1};
+        System.out.println("排序前："+Arrays.toString(a));
+        quickSort(0,4,a);
+        System.out.println("排序后："+Arrays.toString(a));
     }
 
-    private static void partitionSort(int[] a, int start, int end) {
-        if (a == null || start >= end) {
+    private static void quickSort(int l, int h, int[] a) {
+        if (a==null||l>=h){
             return;
         }
-        int pivot = partition(a, start, end);
-        //每次partition实际上pivot的位置已经是定格了
-        partitionSort(a, start, pivot - 1);
-        partitionSort(a, pivot + 1, end);
+        int m = partition(l,h,a);
+        quickSort(l,m,a);
+        quickSort(m+1,h,a);
     }
 
-    private static int partition(int[] a, int s, int e) {
-        //挖洞填坑发，先把s上的元素赋值给pivot那么就多出了一个的s坑位
-        int pivot = a[s]; //第一个元素作为pivot，其实是任意的
-        while (s < e) {
-            while (s < e && a[e] >= pivot) {
-                e--;
+    private static int partition(int l, int h, int[] a) {
+        int i = l,j=h;
+        int pivot = a[i];
+        while (i<j){
+            while (i<j&&a[j]>=pivot){
+                j--;
             }
-            a[s] = a[e];
-            while (s < e && a[s] <= pivot) {
-                s++;
+            a[i] = a[j];
+
+            while (i<j&&a[i]<=pivot){
+                i++;
             }
-            a[e] = a[s];
+            a[j] = a[i];
         }
-        a[s] = pivot;
-        return s;
+        a[i] = pivot;
+        return i;
     }
-
-
-    //quick sort test : partition and conquer
-    private void quickSort(int [] a,int low,int high){
-        if (a==null&&low>=high){
-            return;
-        }
-        int pivot = partitionTest(a,low,high);
-        quickSort(a,low,pivot);
-        quickSort(a,pivot+1,high);
-    }
-
-    private int partitionTest(int[] a, int low, int high) {
-        int pivot = a[low];
-        //先将第一个数作为基数，然后从左到右找一个比pivot小的a[i]并赋值给 a[0],这样就多出一个坑，a[i]
-        //然后从右到左找一个a[j]，比pivot小
-        int i = low,j=high;
-        while (low<=high){
-
-        }
-    }
-
 
     public static void main(String[] args) {
-        int[] a = {3, 1, 4};
-//        quickSort(a);
-//        System.out.println(Arrays.toString(a));
-        mergeSort(a);
-        System.out.println(Arrays.toString(a));
+//        mergeSortTest();
+        quickSortTest();
     }
-
-
 }
