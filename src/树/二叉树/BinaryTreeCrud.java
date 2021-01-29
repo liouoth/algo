@@ -7,24 +7,24 @@ public class BinaryTreeCrud {
     public static TreeNode query(TreeNode root, Integer q) {
         if (root == null) return null;
         if (root.data == q) return root;
-        if (q>root.data){
-            return query(root.rightNode,q);
-        }else {
-            return query(root.leftNode,q);
+        if (q > root.data) {
+            return query(root.rightNode, q);
+        } else {
+            return query(root.leftNode, q);
         }
     }
 
     public static void insert(TreeNode root, Integer q) {
         TreeNode pre = null;
-        while (root!=null){
-            if (root.data>q){
-                if (root.leftNode==null){
+        while (root != null) {
+            if (root.data > q) {
+                if (root.leftNode == null) {
                     pre.leftNode = new TreeNode(q);
                     return;
                 }
                 root = root.leftNode;
-            }else {
-                if (root.rightNode==null){
+            } else {
+                if (root.rightNode == null) {
                     pre.rightNode = new TreeNode(q);
                     return;
                 }
@@ -34,25 +34,81 @@ public class BinaryTreeCrud {
     }
 
     public static void delete(TreeNode root, Integer q) {
-        TreeNode node = null;
+        TreeNode node = root;
         TreeNode pnode = null;
+        boolean turn = false; //false为左
+        while (node != null && node.data != q) {
+            if (q > node.data) {
+                if (node.rightNode.data == q) {
+                    pnode = node;
+                    turn = true;
+                }
+                node = node.rightNode;
+            } else {
+                if (node.leftNode.data == q) {
+                    pnode = node;
+                }
+                node = node.leftNode;
+            }
+        }
 
+        if (node == null) return;
+        if (pnode==null){
+            if (node.rightNode==null&&node.leftNode==null){
+                node = null;
+                return;
+            }
+            if (node.leftNode==null&&node.rightNode!=null){
+                return;
+            }
+            if (node.rightNode==null&&node.leftNode!=null){
+                if (turn)pnode.rightNode=null;
+                else pnode.leftNode=null;
+                return;
+            }
+        }
+        //只有一个节点
+        if (node.leftNode==null&&node.rightNode!=null){
+            if (turn)pnode.rightNode=null;
+            else pnode.leftNode=null;
+            return;
+        }
+        if (node.rightNode==null&&node.leftNode!=null){
+            if (turn)pnode.rightNode=null;
+            else pnode.leftNode=null;
+            return;
+        }
+        //有两个节点
+        if (node.rightNode!=null&&node.leftNode!=null){
+            if (turn) {pnode.rightNode = node.rightNode;
+                pnode.rightNode.leftNode = node.leftNode;
+            }else {
+                pnode.leftNode = node.rightNode;
+                pnode.leftNode.rightNode = node.leftNode;
+            }
+            return;
+        }
+        //没有节点
+        if (node.rightNode==null&&node.leftNode==null){
+            if (turn) pnode.rightNode=null;
+            else pnode.leftNode=null;
+        }
     }
 
     public static void inorder(TreeNode root) {
-        if (root==null) return;
+        if (root == null) return;
         inorder(root.leftNode);
-        System.out.print(root.data+" ");
+        System.out.print(root.data + " ");
         inorder(root.rightNode);
     }
 
 
     /**
-     *          4
-     *        /   \
-     *      3      6
-     *    /      /  \
-     *  2      5     7
+     * 4
+     * |   \
+     * 3     6
+     * |    /  \
+     * 2   5    7
      */
     public static void main(String[] args) {
         TreeNode root = new TreeNode(4);
@@ -69,7 +125,8 @@ public class BinaryTreeCrud {
 //        System.out.println(query(root, 1));
         inorder(root);
         System.out.println("");
-        insert(root,1);
+//        insert(root, 1);
+        delete(root,4);
         inorder(root);
 //        insert(root,9);
     }
